@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>redux 中间件 | Billow&#39;s Blog</title>
+    <meta name="description" content="Record the life">
+    <meta name="generator" content="VuePress 1.3.0">
+    <link rel="icon" href="/logo.png">
+  <meta name="theme-color" content="#3eaf7c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="msapplication-TileColor" content="#000000">
+    
+    <link rel="preload" href="/assets/css/0.styles.c0a7e688.css" as="style"><link rel="preload" href="/assets/js/app.22954aa2.js" as="script"><link rel="preload" href="/assets/js/4.add35840.js" as="script"><link rel="preload" href="/assets/js/3.427e9326.js" as="script"><link rel="preload" href="/assets/js/28.77a244b4.js" as="script"><link rel="prefetch" href="/assets/js/10.e7932f30.js"><link rel="prefetch" href="/assets/js/11.1f571763.js"><link rel="prefetch" href="/assets/js/12.0461003d.js"><link rel="prefetch" href="/assets/js/13.f5d001eb.js"><link rel="prefetch" href="/assets/js/14.0f3a0436.js"><link rel="prefetch" href="/assets/js/15.a0497f0b.js"><link rel="prefetch" href="/assets/js/16.ff107bf4.js"><link rel="prefetch" href="/assets/js/17.035e8731.js"><link rel="prefetch" href="/assets/js/18.01094233.js"><link rel="prefetch" href="/assets/js/19.877f6d14.js"><link rel="prefetch" href="/assets/js/20.714d13f8.js"><link rel="prefetch" href="/assets/js/21.9351b853.js"><link rel="prefetch" href="/assets/js/22.414e6bbb.js"><link rel="prefetch" href="/assets/js/23.dd2e1270.js"><link rel="prefetch" href="/assets/js/24.0fa8a240.js"><link rel="prefetch" href="/assets/js/25.1f79c268.js"><link rel="prefetch" href="/assets/js/26.c85a6468.js"><link rel="prefetch" href="/assets/js/27.fc774c16.js"><link rel="prefetch" href="/assets/js/29.7c842a86.js"><link rel="prefetch" href="/assets/js/30.3b341bef.js"><link rel="prefetch" href="/assets/js/31.cf1cf75a.js"><link rel="prefetch" href="/assets/js/32.8a37ac97.js"><link rel="prefetch" href="/assets/js/33.f3db3e06.js"><link rel="prefetch" href="/assets/js/34.f3d049d9.js"><link rel="prefetch" href="/assets/js/35.0403648c.js"><link rel="prefetch" href="/assets/js/36.f6c57d27.js"><link rel="prefetch" href="/assets/js/37.2bc661c7.js"><link rel="prefetch" href="/assets/js/38.f17264dc.js"><link rel="prefetch" href="/assets/js/5.6d825eed.js"><link rel="prefetch" href="/assets/js/6.603f538b.js"><link rel="prefetch" href="/assets/js/7.cb63a6fa.js"><link rel="prefetch" href="/assets/js/8.5f00453f.js"><link rel="prefetch" href="/assets/js/9.5ad32179.js"><link rel="prefetch" href="/assets/js/vendors~flowchart.b83442b7.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.c0a7e688.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Billow's Blog</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  主页
+</a></div><div class="nav-item"><a href="/archive/" class="nav-link">
+  存档
+</a></div><div class="nav-item"><a href="/front-end/" class="nav-link router-link-active">
+  前端
+</a></div><div class="nav-item"><a href="/back-end/" class="nav-link">
+  后端
+</a></div><div class="nav-item"><a href="/other/" class="nav-link">
+  其他技术
+</a></div><div class="nav-item"><a href="/notebook/" class="nav-link">
+  笔记
+</a></div><div class="nav-item"><a href="/reading/" class="nav-link">
+  读书笔记
+</a></div><div class="nav-item"><a href="/life/" class="nav-link">
+  生活
+</a></div><div class="nav-item"><a href="/about/" class="nav-link">
+  关于我
+</a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  主页
+</a></div><div class="nav-item"><a href="/archive/" class="nav-link">
+  存档
+</a></div><div class="nav-item"><a href="/front-end/" class="nav-link router-link-active">
+  前端
+</a></div><div class="nav-item"><a href="/back-end/" class="nav-link">
+  后端
+</a></div><div class="nav-item"><a href="/other/" class="nav-link">
+  其他技术
+</a></div><div class="nav-item"><a href="/notebook/" class="nav-link">
+  笔记
+</a></div><div class="nav-item"><a href="/reading/" class="nav-link">
+  读书笔记
+</a></div><div class="nav-item"><a href="/life/" class="nav-link">
+  生活
+</a></div><div class="nav-item"><a href="/about/" class="nav-link">
+  关于我
+</a></div> <!----></nav>  <!----> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="_1-什么是-redux-中间件"><a href="#_1-什么是-redux-中间件" class="header-anchor">#</a> 1. 什么是 redux 中间件</h2> <blockquote><p>我们在使用 react 开发应用的时候，一般都会用到 redux 来 管理我们的状态，设计到异步处理，我们一般也会使用 redux-thunk 来处理，而 redux 正是我们要讲的redux 中间件，redux 中间件在 redux 是最重要的概念，也许在 express 中，你也有中间件的一些概念，实际上原理差不多，都是为了留一些扩展根据不同的需要来增强应用的能力，下面我们就一步步解开 redux 中间件的面纱，最后我们一起实现一个 redux 中间件</p></blockquote> <h2 id="_2-redux-中间件原理"><a href="#_2-redux-中间件原理" class="header-anchor">#</a> 2. redux 中间件原理</h2> <blockquote><p>redux 中间件原理, 要先从 applyMiddleware 和 compose 方法说起，下面是一段常见的 react 应用的 redux 中间件使用场景</p></blockquote> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">const</span> middleware <span class="token operator">=</span> <span class="token punctuation">[</span>thunk<span class="token punctuation">]</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span> <span class="token operator">!==</span> <span class="token string">'production'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  middleware<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token function">createLogger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> store <span class="token operator">=</span> <span class="token function">createStore</span><span class="token punctuation">(</span>
+  reducer<span class="token punctuation">,</span>
+  <span class="token function">applyMiddleware</span><span class="token punctuation">(</span><span class="token operator">...</span>middleware<span class="token punctuation">)</span>
+<span class="token punctuation">)</span>
+
+<span class="token function">render</span><span class="token punctuation">(</span>
+  <span class="token operator">&lt;</span>Provider store<span class="token operator">=</span><span class="token punctuation">{</span>store<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>App <span class="token operator">/</span><span class="token operator">&gt;</span>
+  <span class="token operator">&lt;</span><span class="token operator">/</span>Provider<span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'root'</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span>
+
+</code></pre></div> <div class="language-js extra-class"><pre class="language-js"><code>    <span class="token comment">// applyMiddleware 方法</span>
+    <span class="token keyword">const</span> store <span class="token operator">=</span> <span class="token function">createStore</span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token punctuation">)</span>
+    <span class="token keyword">let</span> <span class="token function-variable function">dispatch</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span>
+        <span class="token string">'Dispatching while constructing your middleware is not allowed. '</span> <span class="token operator">+</span>
+          <span class="token string">'Other middleware would not be applied to this dispatch.'</span>
+      <span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> middlewareAPI <span class="token operator">=</span> <span class="token punctuation">{</span>
+      getState<span class="token operator">:</span> store<span class="token punctuation">.</span>getState<span class="token punctuation">,</span>
+      <span class="token function-variable function">dispatch</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token operator">...</span>args</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">dispatch</span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">const</span> chain <span class="token operator">=</span> middlewares<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">middleware</span> <span class="token operator">=&gt;</span> <span class="token function">middleware</span><span class="token punctuation">(</span>middlewareAPI<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    dispatch <span class="token operator">=</span> <span class="token function">compose</span><span class="token punctuation">(</span><span class="token operator">...</span>chain<span class="token punctuation">)</span><span class="token punctuation">(</span>store<span class="token punctuation">.</span>dispatch<span class="token punctuation">)</span>
+
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      <span class="token operator">...</span>store<span class="token punctuation">,</span>
+      dispatch
+    <span class="token punctuation">}</span>
+
+
+  这样 compose 方法处理后 store 就返回了一个 增强的 dispatch 方法
+  我们来看 compose 方法是怎样的
+
+  <span class="token function">compose</span><span class="token punctuation">(</span>f<span class="token punctuation">,</span> g<span class="token punctuation">,</span> h<span class="token punctuation">)</span>  <span class="token operator">&lt;=</span><span class="token operator">==</span><span class="token operator">&gt;</span>  <span class="token punctuation">(</span><span class="token parameter"><span class="token operator">...</span>args</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">f</span><span class="token punctuation">(</span><span class="token function">g</span><span class="token punctuation">(</span><span class="token function">h</span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">function</span> <span class="token function">compose</span><span class="token punctuation">(</span><span class="token parameter"><span class="token operator">...</span>funcs</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>funcs<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> <span class="token parameter">arg</span> <span class="token operator">=&gt;</span> arg
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>funcs<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> funcs<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> funcs<span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span> b</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token operator">...</span>args</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">a</span><span class="token punctuation">(</span><span class="token function">b</span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// 实例</span>
+  <span class="token keyword">function</span> <span class="token function">double</span><span class="token punctuation">(</span><span class="token parameter">x</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token number">2</span> <span class="token operator">*</span> x <span class="token punctuation">}</span>
+  <span class="token keyword">function</span> <span class="token function">square</span><span class="token punctuation">(</span><span class="token parameter">x</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> x <span class="token operator">*</span> x <span class="token punctuation">}</span>
+  <span class="token keyword">let</span> testCompose <span class="token operator">=</span> <span class="token function">compose</span><span class="token punctuation">(</span>double<span class="token punctuation">,</span> square<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span> <span class="token comment">// 50</span>
+</code></pre></div><h2 id="_3-redux-thunk-源码分析"><a href="#_3-redux-thunk-源码分析" class="header-anchor">#</a> 3. redux-thunk 源码分析</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">function</span> <span class="token function">createThunkMiddleware</span><span class="token punctuation">(</span><span class="token parameter">extraArgument</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> dispatch<span class="token punctuation">,</span> getState <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token parameter">next</span> <span class="token operator">=&gt;</span> <span class="token parameter">action</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> action <span class="token operator">===</span> <span class="token string">'function'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> <span class="token function">action</span><span class="token punctuation">(</span>dispatch<span class="token punctuation">,</span> getState<span class="token punctuation">,</span> extraArgument<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> <span class="token function">next</span><span class="token punctuation">(</span>action<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> thunk <span class="token operator">=</span> <span class="token function">createThunkMiddleware</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+thunk<span class="token punctuation">.</span>withExtraArgument <span class="token operator">=</span> createThunkMiddleware<span class="token punctuation">;</span>
+
+<span class="token comment">// next =&gt; action =&gt; {}</span>
+<span class="token punctuation">{</span>
+  getState<span class="token operator">:</span> store<span class="token punctuation">.</span>getState<span class="token punctuation">,</span>
+  <span class="token function-variable function">dispatch</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token operator">...</span>args</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">dispatch</span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// next &lt;==&gt; store.dispatch 转换后的 dispatch</span>
+<span class="token comment">// 中间件的执行顺序 [thunk, logger]</span>
+
+如果 action 是一个函数， thunk 中间件会拦截执行 action，
+如果 action 是一个对象， 则执行 next 方法， next 就是 thunk 下一个中间件 <span class="token parameter">action</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+因为正常情况下 action 一般是 对象， 所以方法会一直执行，按照 middleware 数组顺序
+
+<span class="token parameter">action</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> action <span class="token operator">===</span> <span class="token string">'function'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">action</span><span class="token punctuation">(</span>dispatch<span class="token punctuation">,</span> getState<span class="token punctuation">,</span> extraArgument<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">return</span> <span class="token function">next</span><span class="token punctuation">(</span>action<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+这里有一点疑问的是 <span class="token function">action</span><span class="token punctuation">(</span>dispatch<span class="token punctuation">,</span> getState<span class="token punctuation">,</span> extraArgument<span class="token punctuation">)</span>
+
+action 里面的 dispatch 是一个空方法，只是最后在 applyMiddleWare dispatch 最后会被覆盖
+在之前的 v3 dispatch 就是 store<span class="token punctuation">.</span>dispatch<span class="token punctuation">,</span> 后面 v4 dispatch 改成 空方法，那这里的 dispatch
+方法就没有 dispatch 的功能了，具体可以看这个 <span class="token punctuation">[</span>issue<span class="token punctuation">]</span><span class="token punctuation">(</span>https<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span>github<span class="token punctuation">.</span>com<span class="token operator">/</span>reduxjs<span class="token operator">/</span>redux<span class="token operator">/</span>issues<span class="token operator">/</span><span class="token number">1485</span><span class="token punctuation">)</span>
+如果你对这里有什么还得理解，欢迎沟通
+
+</code></pre></div><h2 id="_5-实现自己的中间件"><a href="#_5-实现自己的中间件" class="header-anchor">#</a> 5. 实现自己的中间件</h2> <div class="language-js extra-class"><pre class="language-js"><code><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>dispatch<span class="token punctuation">,</span> getState<span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token parameter">next</span> <span class="token operator">=&gt;</span> <span class="token parameter">action</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'log'</span><span class="token punctuation">)</span>
+    <span class="token function">next</span><span class="token punctuation">(</span>action<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">'Error!'</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">2/20/2020, 2:09:37 PM</span></div></footer> <!----> </main></div><div class="global-ui"><!----></div></div>
+    <script src="/assets/js/app.22954aa2.js" defer></script><script src="/assets/js/4.add35840.js" defer></script><script src="/assets/js/3.427e9326.js" defer></script><script src="/assets/js/28.77a244b4.js" defer></script>
+  </body>
+</html>
