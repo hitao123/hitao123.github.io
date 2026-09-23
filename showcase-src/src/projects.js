@@ -1,0 +1,41 @@
+const projects = [
+  {
+    id: "wedding-lottery",
+    number: "01",
+    label: "Interactive experience",
+    title: "婚礼抽奖",
+    description: "以婚礼抽奖舞台为主题的互动展示界面。",
+    image: `${import.meta.env.BASE_URL}assets/wedding-lottery.png`,
+    type: "wide warm",
+    previewBackground: "#3a0e12",
+    tags: ["抽奖舞台", "婚礼场景", "互动展示"],
+    focus: "把现场的期待感放在抽奖揭晓的一刻，画面以酒红色舞台为主角。",
+    note: "当前收录的是项目界面展示；公开体验地址待补充。",
+  },
+  {
+    id: "resume-studio",
+    number: "02",
+    label: "Productivity tool",
+    title: "简历工坊",
+    description: "把简历版本、AI 优化和导出整理在一个简洁的工作台里。",
+    image: `${import.meta.env.BASE_URL}assets/resume-studio.png`,
+    type: "wide",
+    tags: ["版本管理", "AI 辅助", "PDF 导出"],
+    focus: "通过工作台展示简历版本、内容优化和导出这几个核心环节。",
+    note: "当前收录的是项目界面展示；公开体验地址待补充。",
+  },
+  {
+    id: "wedding-planner",
+    number: "03",
+    label: "Mobile application",
+    title: "备婚 App",
+    description: "围绕备婚方向设计的移动端登录入口。",
+    image: `${import.meta.env.BASE_URL}assets/wedding-planner.png`,
+    type: "phone",
+    tags: ["移动端", "备婚方向", "登录入口"],
+    focus: "从移动端入口开始展示备婚产品的视觉方向与使用场景。",
+    note: "目前只有登录页素材，后续可继续补充核心页面和体验地址。",
+  },
+];
+
+export { projects };
