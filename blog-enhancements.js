@@ -1,5 +1,5 @@
-// This repository contains the published VuePress output, not its source.
-// Keep the new showcase link outside the old bundle so existing articles stay intact.
+// The root homepage is standalone; the existing articles and archive remain prebuilt VuePress output.
+// This script adds the showcase to VuePress navigation and the 2026 journal to the archive index.
 (() => {
   const addShowcaseLink = (nav) => {
     if (!nav || nav.querySelector('a[href="/vibe/"]')) return;
@@ -53,4 +53,16 @@
   update();
   const app = document.getElementById("app");
   if (app) new MutationObserver(update).observe(app, { childList: true, subtree: true });
+
+  // The legacy VuePress router would otherwise render its former home component for `/`.
+  document.addEventListener("click", (event) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const anchor = event.target.closest("a[href]");
+    if (!anchor || anchor.target || anchor.hasAttribute("download")) return;
+    const destination = new URL(anchor.href, window.location.href);
+    if (destination.origin !== window.location.origin || destination.pathname !== "/") return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    window.location.assign(destination.href);
+  }, true);
 })();
