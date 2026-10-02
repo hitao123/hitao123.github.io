@@ -1,5 +1,5 @@
 // The root homepage is standalone; the existing articles and archive remain prebuilt VuePress output.
-// This script adds the showcase to VuePress navigation and the 2026 journal to the archive index.
+// This script adds the showcase to VuePress navigation and new articles to the archive index.
 (() => {
   const addShowcaseLink = (nav) => {
     if (!nav || nav.querySelector('a[href="/vibe/"]')) return;
@@ -43,11 +43,19 @@
       item.append(link);
       archiveList.prepend(item);
     }
+    if (location.pathname === "/archive/" && archiveList && !archiveList.querySelector('a[href="/archive/2026/honor-of-kings-20min-playbook/"]')) {
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      link.href = "/archive/2026/honor-of-kings-20min-playbook/";
+      link.textContent = "2026/10/02 · 王者峡谷 20 分钟节奏图";
+      item.append(link);
+      archiveList.prepend(item);
+    }
     if (location.pathname === "/archive/") {
       const updatedLabel = document.querySelector(".last-updated .prefix");
       const updatedTime = document.querySelector(".last-updated .time");
       if (updatedLabel && updatedLabel.textContent !== "存档更新：") updatedLabel.textContent = "存档更新：";
-      if (updatedTime && updatedTime.textContent !== "2026/09/23") updatedTime.textContent = "2026/09/23";
+      if (updatedTime && updatedTime.textContent !== "2026/10/02") updatedTime.textContent = "2026/10/02";
     }
   };
   update();

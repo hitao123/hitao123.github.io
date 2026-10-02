@@ -15,3 +15,9 @@ npm run build
 The build writes static files to `../vibe/`, which GitHub Pages serves from the `master` branch. Commit both the source changes and the rebuilt `vibe/` files. To add a project, put its image in `showcase-src/public/assets/` and add one object to `showcase-src/src/projects.js`. Add a `url` only when there is a real public project address.
 
 `blog-enhancements.js` adds a showcase link to the navigation on remaining VuePress pages and adds the 2026 project journal to the archive index. It is loaded on the legacy VuePress pages and forces links to `/` to load the standalone homepage as a full page navigation, avoiding VuePress rendering its former home component. Other internal links keep using the VuePress router. The standalone root homepage links to the showcase directly; article content remains unchanged.
+
+## Publish standalone interactive articles
+
+The latest interactive article is [王者峡谷 20 分钟节奏图](https://hitao123.github.io/archive/2026/honor-of-kings-20min-playbook/), published on 2026-10-02. Its complete HTML, styles, and interactive map are in `archive/2026/honor-of-kings-20min-playbook/index.html`.
+
+To publish an article, add its static page under `archive/<year>/<slug>/`, add a dated link at the top of the homepage's `post-list`, and add its archive entry in `blog-enhancements.js`. Bump the script version in legacy HTML pages when changing the archive enhancement so returning visitors receive the current article list.

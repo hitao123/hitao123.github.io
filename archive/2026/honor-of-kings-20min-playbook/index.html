@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>王者峡谷 20 分钟节奏图 · Billow's Blog</title>
+<meta name="description" content="一张可交互的王者峡谷 20 分钟节奏图：切换五个位置，跟随时间轴查看站位、兵线、资源与行动建议。">
+<link rel="canonical" href="https://hitao123.github.io/archive/2026/honor-of-kings-20min-playbook/">
+<link rel="icon" href="/logo.png">
+<style>
+  :root {
+    --bg: #fcfcfc;
+    --fg: #141414;
+    --fg2: rgba(20, 20, 20, 0.74);
+    --fg3: rgba(20, 20, 20, 0.6);
+    --fg4: rgba(20, 20, 20, 0.36);
+    --fill1: rgba(20, 20, 20, 0.14);
+    --fill2: rgba(20, 20, 20, 0.08);
+    --fill3: rgba(20, 20, 20, 0.045);
+    --stroke1: rgba(20, 20, 20, 0.2);
+    --stroke2: rgba(20, 20, 20, 0.12);
+    --stroke3: rgba(20, 20, 20, 0.08);
+    --accent: #2f6fd6;
+    --blue: #2e79b5;
+    --red: #c94848;
+    --yellow: #c99a14;
+    --cyan: #2a9a8a;
+    --warn: #b7741a;
+    --warn-bg: rgba(214, 140, 30, 0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #181818;
+      --fg: #f0f0f0;
+      --fg2: rgba(240, 240, 240, 0.74);
+      --fg3: rgba(240, 240, 240, 0.6);
+      --fg4: rgba(240, 240, 240, 0.36);
+      --fill1: rgba(240, 240, 240, 0.14);
+      --fill2: rgba(240, 240, 240, 0.08);
+      --fill3: rgba(240, 240, 240, 0.05);
+      --stroke1: rgba(240, 240, 240, 0.2);
+      --stroke2: rgba(240, 240, 240, 0.12);
+      --stroke3: rgba(240, 240, 240, 0.08);
+      --accent: #6aa3ff;
+      --blue: #5aa2e0;
+      --red: #ef6b6b;
+      --yellow: #e8c030;
+      --cyan: #3cc0ad;
+      --warn: #f0a040;
+      --warn-bg: rgba(240, 160, 64, 0.14);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 48px; display: flex; flex-direction: column; gap: 24px; }
+  h1 { font-size: 24px; line-height: 30px; font-weight: 600; margin: 0; }
+  h2 { font-size: 18px; line-height: 24px; font-weight: 600; margin: 0; }
+  h3 { font-size: 15px; line-height: 22px; font-weight: 600; margin: 0; }
+  p { margin: 0; }
+  .muted { color: var(--fg2); }
+  .small { font-size: 12px; line-height: 16px; }
+  .tert { color: var(--fg3); }
+  .quat { color: var(--fg4); }
+  .stack { display: flex; flex-direction: column; }
+  .row { display: flex; align-items: center; flex-wrap: wrap; }
+  .spacer { flex: 1; }
+
+  .pill {
+    appearance: none; border: 1px solid var(--stroke2); background: transparent; color: var(--fg2);
+    font: inherit; font-size: 13px; padding: 4px 12px; border-radius: 999px; cursor: pointer;
+  }
+  .pill:hover { background: var(--fill3); }
+  .pill.active { background: var(--fill1); color: var(--fg); border-color: transparent; }
+  .pill.sm { font-size: 12px; padding: 2px 9px; }
+  .btn {
+    appearance: none; border: none; font: inherit; font-size: 13px; padding: 5px 14px; border-radius: 6px; cursor: pointer;
+    background: var(--accent); color: #fff;
+  }
+  .btn.ghost { background: transparent; color: var(--fg2); }
+  .btn.ghost:hover { background: var(--fill3); }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .card { border: 1px solid var(--stroke2); border-radius: 8px; overflow: hidden; }
+  .card-h { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; font-size: 12px; color: var(--fg2); border-bottom: 1px solid var(--stroke3); }
+  .card-b { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  #map svg { width: 100%; display: block; }
+
+  .radar-dot { width: 8px; height: 8px; border-radius: 4px; background: var(--accent); }
+
+  #timeline { position: relative; height: 34px; border-radius: 6px; background: var(--fill3); cursor: pointer; overflow: hidden; touch-action: manipulation; }
+  #timeline .progress { position: absolute; left: 0; top: 0; bottom: 0; background: var(--fill2); }
+  #timeline .seg { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--fg3); }
+  #timeline .seg.active { color: var(--fg); font-weight: 600; }
+  #timeline .tick { position: absolute; bottom: 0; width: 1px; height: 6px; background: var(--fg4); }
+  #timeline .cursor { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--accent); }
+  .tl-labels { display: flex; justify-content: space-between; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+
+  .clock { font-size: 28px; line-height: 32px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .callout { border-radius: 8px; padding: 10px 12px; background: var(--fill3); }
+  .callout .title { font-weight: 600; margin-bottom: 2px; }
+  .callout.warn { background: var(--warn-bg); }
+  .callout.warn .title { color: var(--warn); }
+  .plan-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; }
+  .plan-item { padding: 10px 0; border-top: 1px solid var(--stroke3); }
+  .plan-item.span { grid-column: span 2; }
+  .plan-item p:last-child { margin-top: 2px; }
+
+  .rules3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start; }
+  .rules2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
+  table { width: 100%; border-collapse: collapse; border: 1px solid var(--stroke2); border-radius: 8px; overflow: hidden; border-style: hidden; box-shadow: 0 0 0 1px var(--stroke2); }
+  th, td { text-align: left; padding: 8px 10px; vertical-align: top; }
+  th { font-size: 12px; font-weight: 500; color: var(--fg3); background: var(--fill3); }
+  td { border-top: 1px solid var(--stroke3); }
+
+  @media (max-width: 860px) {
+    main { padding: 18px 14px 40px; }
+    .layout, .rules3, .rules2 { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 420px) {
+    .plan-grid { grid-template-columns: 1fr; }
+    .plan-item.span { grid-column: auto; }
+  }
+  .blog-header { border-bottom: 1px solid var(--stroke2); }
+  .blog-nav { max-width: 1180px; margin: auto; padding: 16px 20px; display: flex; align-items: center; flex-wrap: wrap; gap: 12px 24px; }
+  .blog-nav a { color: var(--fg2); text-decoration: none; }
+  .blog-nav a:first-child { margin-right: auto; font-weight: 600; color: var(--fg); }
+  .blog-meta { margin-bottom: 8px; color: var(--fg3); font-size: 12px; }
+  .blog-footer { border-top: 1px solid var(--stroke2); padding: 24px 20px; text-align: center; color: var(--fg3); }
+  .blog-footer a { color: var(--accent); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+</style>
+</head>
+<body>
+<header class="blog-header"><nav class="blog-nav" aria-label="博客导航"><a href="/">Billow's Blog</a><a href="/#writing">最新文章</a><a href="/archive/">文章存档</a><a href="/vibe/">作品展厅</a></nav></header>
+<main>
+  <div class="stack" style="gap:6px">
+    <p class="blog-meta"><time datetime="2026-10-02">2026 年 10 月 2 日</time> · 生活 / 游戏 · 交互笔记</p>
+    <h1>王者峡谷 20 分钟节奏图</h1>
+    <p class="muted">选你的位置，点播放。地图按时间演示五个人的站位、兵线、资源和对面打野的动向，右侧实时告诉你这个时间段该做什么。</p>
+  </div>
+
+  <div class="row" style="gap:8px">
+    <div id="roles" class="row" style="gap:8px"></div>
+    <div class="spacer"></div>
+    <button id="play" class="btn">播放</button>
+    <button id="reset" class="btn ghost">重新开始</button>
+    <div id="speeds" class="row" style="gap:6px"></div>
+  </div>
+
+  <div class="layout">
+    <section class="card">
+      <div class="card-h"><span>峡谷小地图</span><span class="tert">蓝方视角</span></div>
+      <div class="card-b">
+        <div class="row" style="gap:6px">
+          <div id="radarDot" class="radar-dot"></div>
+          <p id="radarText" class="small tert">每 3 秒看一眼小地图：对面打野在哪？</p>
+        </div>
+        <div id="map"></div>
+        <div class="stack" style="gap:4px">
+          <div id="timeline"></div>
+          <div class="tl-labels small tert"><span>0:00</span><span>4:00</span><span>8:00</span><span>14:00</span><span>20:00</span></div>
+        </div>
+        <div class="legend small tert">
+          <span>蓝圈：我方五人</span>
+          <span>红圈：对面打野</span>
+          <span>红色虚线圈：他最后出现的位置</span>
+          <span>小方块：兵线</span>
+          <span>黄色菱形：资源</span>
+          <span>蓝色虚线：你接下来 90 秒的路线</span>
+        </div>
+      </div>
+    </section>
+
+    <aside class="stack" style="gap:16px">
+      <div class="row" style="gap:20px; align-items:flex-end">
+        <div class="stack">
+          <div id="clock" class="clock">0:00</div>
+          <p class="small tert">比赛时间</p>
+        </div>
+        <div class="stack" style="gap:2px">
+          <p id="phaseRange" class="small tert"></p>
+          <h2 id="phaseName"></h2>
+          <p id="phaseGoal" class="muted"></p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <p id="eventTitle" class="title"></p>
+        <p id="eventText"></p>
+      </div>
+      <div id="danger" class="callout warn" style="display:none">
+        <p class="title">危险信号</p>
+        <p id="dangerText"></p>
+      </div>
+
+      <div class="stack" style="gap:4px">
+        <h3 id="roleTitle"></h3>
+        <p id="roleDo" style="font-weight:500"></p>
+      </div>
+
+      <div class="plan-grid">
+        <div class="plan-item"><p class="small tert">兵线</p><p id="pWave"></p></div>
+        <div class="plan-item"><p class="small tert">防 gank</p><p id="pGank"></p></div>
+        <div class="plan-item"><p class="small tert">出装</p><p id="pItems"></p></div>
+        <div class="plan-item"><p class="small tert">经济</p><p id="pGold"></p></div>
+        <div class="plan-item span"><p class="small tert">参团</p><p id="pFight"></p></div>
+      </div>
+
+      <p id="nextEvent" class="small tert"></p>
+    </aside>
+  </div>
+
+  <section class="stack" style="gap:12px">
+    <h2>任何位置都通用的规则</h2>
+    <div class="rules3">
+      <div class="card">
+        <div class="card-h"><span>离线支援前，三条都满足才走</span></div>
+        <div class="card-b" style="gap:8px">
+          <p>1. 自己的兵线已经推过河道，或者已经清掉。</p>
+          <p>2. 你赶到的时候，那边的战斗还没结束。</p>
+          <p>3. 对面对应的人不在你这条线，或者你知道他去了哪。</p>
+        </div>
+      </div>
+      <div class="stack" style="gap:8px">
+        <h3>出现这些信号就后撤</h3>
+        <p>对面打野超过 10 秒没在小地图上出现。</p>
+        <p>对面中路突然消失。</p>
+        <p>对面边路突然不推线、站位很靠前。</p>
+        <p>你的兵线已经压过了河道。</p>
+      </div>
+      <div class="stack" style="gap:8px">
+        <h3>经济优先级</h3>
+        <p style="font-weight:500">发育路 ≈ 中路 ≈ 打野 &gt; 对抗路 &gt; 游走</p>
+        <p class="muted">兵线和野怪先给前三个位置。游走不抢最后一下；C 位漏兵，就是全队亏经济。</p>
+      </div>
+    </div>
+
+    <div class="rules2">
+      <div class="stack" style="gap:8px">
+        <h3>兵线的四种处理</h3>
+        <table>
+          <thead><tr><th>处理方式</th><th>什么时候用</th><th>怎么做</th></tr></thead>
+          <tbody>
+            <tr><td>控线</td><td>对面打野可能来抓你</td><td>站在自家塔前只补最后一下，不用技能清兵</td></tr>
+            <tr><td>快推</td><td>准备支援、回城或入侵</td><td>技能清掉整波，把兵推到对面塔下再走</td></tr>
+            <tr><td>憋线</td><td>想拿塔</td><td>留几只后排兵不打，攒成一大波一起推</td></tr>
+            <tr><td>带线</td><td>中后期，队友在中路牵制</td><td>带到对面一塔附近，资源刷新前 30 秒回来</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="stack" style="gap:8px">
+        <h3>出装克制：看对面，补一件</h3>
+        <table>
+          <thead><tr><th>对面有</th><th>你优先补</th></tr></thead>
+          <tbody>
+            <tr><td>回血英雄（吸血、治疗）</td><td>制裁之刃（物理）、梦魇之牙（法术）</td></tr>
+            <tr><td>高爆发刺客或法师</td><td>名刀·司命（物理）、辉月（法术）</td></tr>
+            <tr><td>物理输出多</td><td>反伤刺甲、不祥征兆</td></tr>
+            <tr><td>法术输出多</td><td>魔女斗篷</td></tr>
+            <tr><td>坦克多、肉厚</td><td>末世、破甲弓（物理）；痛苦面具、虚无法杖（法术）</td></tr>
+            <tr><td>控制技能多</td><td>抵抗之靴</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="small quat">时间点是简化演示，暴君、主宰和后期龙的刷新时间会随赛季调整，以局内提示为准；装备名按常见版本整理。</p>
+  </section>
+</main>
+<footer class="blog-footer"><a href="/#writing">返回最新文章</a> · Billow's Blog</footer>
+
+<script>
+(function () {
+  var GAME_END = 1200;
+  var BASE_RATE = 15;
+  var TICK_MS = 50;
+
+  var BASE = [45, 355], RED_BASE = [355, 45];
+  var TYRANT = [280, 280], LORD = [120, 120];
+  var BLUE_UP = [105, 235], BLUE_LOW = [185, 300], RED_UP = [215, 100], RED_LOW = [295, 165];
+
+  function L(lane, u) {
+    var d = 310;
+    if (lane === "mid") return [45 + d * u, 355 - d * u];
+    if (lane === "top") return u < 0.5 ? [45, 355 - d * (u / 0.5)] : [45 + d * ((u - 0.5) / 0.5), 45];
+    return u < 0.5 ? [45 + d * (u / 0.5), 355] : [355, 355 - d * ((u - 0.5) / 0.5)];
+  }
+
+  function posAt(kfs, t) {
+    if (t <= kfs[0][0]) return kfs[0][1];
+    for (var i = 0; i < kfs.length - 1; i++) {
+      var t0 = kfs[i][0], p0 = kfs[i][1], t1 = kfs[i + 1][0], p1 = kfs[i + 1][1];
+      if (t >= t0 && t <= t1) {
+        var k = t1 === t0 ? 0 : (t - t0) / (t1 - t0);
+        return [p0[0] + (p1[0] - p0[0]) * k, p0[1] + (p1[1] - p0[1]) * k];
+      }
+    }
+    return kfs[kfs.length - 1][1];
+  }
+
+  function fmt(s) {
+    var v = Math.max(0, Math.floor(s));
+    var sec = v % 60;
+    return Math.floor(v / 60) + ":" + (sec < 10 ? "0" : "") + sec;
+  }
+
+  var ROLES = [
+    { id: "top", name: "对抗路", short: "对" },
+    { id: "jg", name: "打野", short: "野" },
+    { id: "mid", name: "中路", short: "中" },
+    { id: "adc", name: "发育路", short: "发" },
+    { id: "sup", name: "游走", short: "辅" }
+  ];
+
+  var PATHS = {
+    top: [
+      [0, BASE], [20, L("top", 0.42)], [170, L("top", 0.42)], [185, L("top", 0.34)], [215, L("top", 0.34)],
+      [235, L("top", 0.44)], [250, L("top", 0.5)], [300, L("top", 0.56)], [330, L("top", 0.44)], [450, L("top", 0.44)],
+      [475, [100, 150]], [490, [108, 138]], [540, [108, 138]], [565, L("top", 0.4)], [630, L("top", 0.4)],
+      [645, L("mid", 0.58)], [680, L("mid", 0.6)], [700, L("top", 0.45)], [840, L("top", 0.5)], [925, L("top", 0.66)],
+      [945, L("top", 0.58)], [965, [100, 150]], [990, [110, 135]], [1080, [110, 135]], [1110, L("mid", 0.7)], [1200, L("mid", 0.86)]
+    ],
+    jg: [
+      [0, BASE], [15, BLUE_UP], [55, BLUE_UP], [75, [140, 270]], [95, BLUE_LOW], [140, BLUE_LOW], [160, L("bot", 0.4)],
+      [180, L("bot", 0.44)], [200, [235, 250]], [215, BLUE_LOW], [230, [262, 292]], [245, [272, 288]], [300, [272, 288]],
+      [320, L("bot", 0.55)], [345, RED_LOW], [380, RED_LOW], [410, L("mid", 0.5)], [445, BLUE_UP], [470, [118, 140]],
+      [540, [118, 140]], [560, L("mid", 0.58)], [670, L("mid", 0.6)], [700, BLUE_UP], [760, BLUE_UP], [790, RED_UP],
+      [830, RED_UP], [860, L("mid", 0.55)], [940, L("mid", 0.55)], [965, [125, 140]], [1080, [125, 140]],
+      [1110, L("mid", 0.72)], [1200, L("mid", 0.88)]
+    ],
+    mid: [
+      [0, BASE], [25, L("mid", 0.46)], [150, L("mid", 0.47)], [175, BLUE_UP], [195, L("top", 0.36)], [210, L("top", 0.37)],
+      [228, L("mid", 0.46)], [250, [268, 282]], [300, [268, 282]], [320, L("mid", 0.5)], [460, L("mid", 0.5)],
+      [478, [128, 150]], [540, [128, 150]], [560, L("mid", 0.6)], [700, L("mid", 0.6)], [720, L("mid", 0.55)],
+      [950, L("mid", 0.55)], [968, [132, 150]], [1080, [132, 150]], [1110, L("mid", 0.72)], [1200, L("mid", 0.86)]
+    ],
+    adc: [
+      [0, BASE], [25, L("bot", 0.42)], [230, L("bot", 0.42)], [248, [282, 298]], [300, [282, 298]], [315, L("bot", 0.5)],
+      [330, L("bot", 0.56)], [350, L("bot", 0.44)], [460, L("bot", 0.42)], [530, L("bot", 0.36)], [575, L("mid", 0.5)],
+      [960, L("mid", 0.52)], [975, [140, 155]], [1080, [140, 155]], [1110, L("mid", 0.7)], [1200, L("mid", 0.85)]
+    ],
+    sup: [
+      [0, BASE], [25, L("bot", 0.45)], [165, L("bot", 0.47)], [190, [238, 262]], [215, [255, 275]], [248, [275, 292]],
+      [300, [275, 292]], [320, L("bot", 0.5)], [350, L("mid", 0.48)], [430, L("mid", 0.48)], [455, [100, 125]],
+      [480, [112, 130]], [540, [112, 130]], [560, L("mid", 0.58)], [700, L("mid", 0.58)], [720, L("mid", 0.53)],
+      [920, L("mid", 0.53)], [945, [105, 125]], [1080, [115, 130]], [1110, L("mid", 0.73)], [1200, L("mid", 0.88)]
+    ]
+  };
+
+  var ENEMY_JG = [
+    [0, RED_BASE], [15, RED_LOW], [60, RED_LOW], [100, RED_UP], [150, [150, 80]], [185, [85, 75]], [200, [60, 95]],
+    [215, [70, 80]], [240, [200, 180]], [255, [290, 262]], [300, [295, 265]], [330, RED_LOW], [380, RED_UP],
+    [420, RED_UP], [470, [140, 108]], [540, [140, 108]], [560, RED_UP], [700, L("mid", 0.66)], [720, RED_LOW],
+    [840, RED_LOW], [900, [150, 60]], [930, L("top", 0.72)], [950, L("top", 0.72)], [970, [140, 108]],
+    [1080, [140, 108]], [1090, RED_UP]
+  ];
+  var ENEMY_VISIBLE = [[0, 45], [198, 222], [260, 300], [385, 405], [470, 540], [700, 715], [928, 950], [968, 1080]];
+
+  function laneFront(lane, t) {
+    if (lane === "top") {
+      if (t < 240) return 0.5;
+      if (t < 330) return 0.56;
+      if (t < 840) return 0.47;
+      if (t < 940) return 0.64;
+      return t < 1080 ? 0.55 : 0.6;
+    }
+    if (lane === "mid") {
+      if (t < 560) return 0.5;
+      if (t < 700) return 0.58;
+      return t < 1100 ? 0.55 : 0.74;
+    }
+    if (t < 300) return 0.5;
+    if (t < 350) return 0.56;
+    if (t < 540) return 0.48;
+    return t < 1100 ? 0.4 : 0.55;
+  }
+
+  var LANES = ["top", "mid", "bot"];
+  var TOWERS = [];
+  LANES.forEach(function (lane) {
+    TOWERS.push({ lane: lane, u: 0.22, blue: true }, { lane: lane, u: 0.38, blue: true },
+                { lane: lane, u: 0.62, blue: false }, { lane: lane, u: 0.78, blue: false });
+  });
+  var TOWER_DOWN = { "bot-0.62": 335, "bot-0.38": 540, "mid-0.62": 660, "top-0.62": 905, "mid-0.78": 1140 };
+
+  var RESOURCES = [
+    { name: "暴君", p: TYRANT, warn: 180, start: 240, end: 300 },
+    { name: "主宰", p: LORD, warn: 420, start: 480, end: 540 },
+    { name: "后期龙", p: LORD, warn: 930, start: 990, end: 1075 }
+  ];
+
+  var EVENTS = [
+    { t: 0, text: "出门：边路先站在自家塔附近，不要脸探对面草丛。" },
+    { t: 30, text: "第一波兵线交汇：开始补刀，补刀比打人重要。" },
+    { t: 45, text: "看到对面打野在他的下半区：接下来他很可能去上半区，或者来抓对抗路。" },
+    { t: 120, text: "约 2 分钟：中路、打野陆续到 4 级，gank 危险期开始。" },
+    { t: 185, text: "对面打野已经超过 10 秒没出现：对抗路主动退到塔边。" },
+    { t: 200, text: "对面打野果然来抓对抗路：因为提前后撤，中路清完线赶来反打。" },
+    { t: 210, text: "暴君刷新前 30 秒：打野、中路、发育路、游走往下半区靠。" },
+    { t: 240, text: "暴君刷新（约 4 分钟，以局内提示为准）：先推线，再打龙。" },
+    { t: 300, text: "拿下暴君：顺势推掉对面发育路一塔。" },
+    { t: 450, text: "主宰刷新前 30 秒：对抗路清线，游走先去探主宰附近的草丛。" },
+    { t: 480, text: "主宰刷新（约 8 分钟，以局内提示为准）：上半区集合。" },
+    { t: 540, text: "主宰换掉了我方发育路一塔：射手换线去中路，不守空线。" },
+    { t: 660, text: "抱团推掉对面中路一塔。" },
+    { t: 840, text: "对抗路开始单带：小地图看不到对面 3 人以上，就不过河道。" },
+    { t: 930, text: "对面打野出现在上路附近：单带的人立刻往回撤。" },
+    { t: 960, text: "后期龙团前 30 秒：所有人停止带线，往龙坑集合。" },
+    { t: 990, text: "后期龙刷新（具体时间以版本为准）：先打死对面关键人，再开龙。" },
+    { t: 1080, text: "团战打赢：拿龙后带着兵线推中路。" },
+    { t: 1140, text: "推高地：等兵线到了再上，不要裸塔。" }
+  ];
+
+  var PHASES = [
+    { start: 0, end: 240, range: "0:00 – 4:00", name: "对线期", goal: "抢 4 级，不掉经济" },
+    { start: 240, end: 480, range: "4:00 – 8:00", name: "首个资源", goal: "暴君和第一座塔" },
+    { start: 480, end: 840, range: "8:00 – 14:00", name: "主宰与换线", goal: "主宰、换线、拿中塔" },
+    { start: 840, end: 1200, range: "14:00 – 20:00", name: "带线与决战", goal: "一人带线，其余人抱团，龙团前回来" }
+  ];
+
+  function P(d, w, g, i, e, f) { return { do: d, wave: w, gank: g, items: i, gold: e, fight: f }; }
+  var PLAN = {
+    top: [
+      P("稳住对线，比对面先到 4 级，不被单杀。", "兵线控在自家一塔到河道之间，不要越过河道。", "对面打野和中路都不在小地图上时，主动退到塔边。", "鞋 + 第一件吸血或防御小件；打不过就先补护甲。", "补刀第一，漏一波兵比少一个人头更亏。", "前期基本不离线；河道打架只有自己线清掉才去。"),
+      P("对面往暴君集结时，你这一路就是机会：推线、压塔。", "离开前把兵推到对面塔下，再决定去不去暴君。", "确认对面 3 人以上在暴君再压塔，看不到人就别压。", "做完第一件核心装备。", "清完线顺手吃自家上半区的小野怪。", "暴君团只有你线清完、10 秒内能赶到才去。"),
+      P("主宰在你这一侧：刷新前清好线，和打野一起占视野。", "一塔丢了别硬守，把线控在二塔前。", "主宰前后对面会抱团来上半区，看不到 3 人以上就回塔边。", "看对面输出类型补抗性：物理多出护甲，法术多出魔抗。", "主宰打完立刻回线吃兵，别跟着大部队空逛。", "进场前想清楚：你是先手开团，还是留下来保护后排。"),
+      P("单带一侧边路，逼对面派人来守。", "带到对面一塔附近就够了，龙团前 30 秒回来。", "小地图上看不到对面 3～4 个人，就不过河道。", "补保命装，比如贤者的庇护（复活甲）。", "带线是你的经济来源，不要去中路抢 C 位的兵。", "能赶上团战，带线才算成功；赶不上就让队友别开团。")
+    ],
+    jg: [
+      P("刷满第一轮野怪到 4 级，第一波去抓离你近、兵线压得深的那一路。", "不吃线，除非兵线快进塔且没人在。", "记住对面打野开局在哪一侧，推算他 4 级后去哪，提前反蹲。", "打野刀优先升级，其次鞋。", "刷野效率第一；抓不到就立刻回野区，别站在线上耗时间。", "能抓就抓，抓完记得回去把自己的野刷掉。"),
+      P("暴君刷新前 30 秒，带中路、发育路、游走过去。", "打龙前让发育路先推一波线，防止对面趁机推塔。", "看对面打野上次出现的位置：在另一侧就放心打龙，在附近就先打人。", "做第一件核心输出装。", "河蟹、对面野区边缘的野怪，有队友跟着才去抢。", "拿到资源比拿人头重要。"),
+      P("打主宰，打完带队推中塔。", "开龙前确认三路兵线都不在自家塔下。", "对面打野在主宰附近消失时，不要单独开龙。", "根据对面阵容补一件防御或保命装。", "野怪刷新就去刷，资源空档期再抓人。", "不要第一个进场，等对面关键控制交出来再进去收割。"),
+      P("盯后期龙，控制对面野区视野。", "边线让给带线的人，你在中路附近策应。", "不要一个人钻进对面野区没视野的地方。", "补保命装，比如名刀·司命。", "对面野区有视野、有队友跟着时再去反野。", "先打死对面关键人，再开龙；抢龙是你的核心任务。")
+    ],
+    mid: [
+      P("清线速度第一，清完就去河道或边路看一眼。", "快推：每波都用技能清掉，推完立刻看两边。", "约 2 分钟对面打野 4 级后最危险，站在自己小兵后面。", "鞋 + 第一件法术核心装（法穿或法强）。", "中路兵一波都不要漏，支援回来先清线。", "清完线再走；对面中路消失要马上发信号。"),
+      P("暴君团是你最重要的时刻：提供控制和伤害。", "每次去暴君前，先把中线推出去。", "走河道前先看视野，不走没人探过的草。", "做第二件核心装。", "暴君打完立刻回中路吃线。", "站在前排身后放技能，不要第一个露脸。"),
+      P("守好中塔、推对面中塔，主宰团跟着打野走。", "中路不能断线，中塔是这一段最关键的塔。", "中路被压时不出塔，等打野来了再打。", "对面肉多出虚无法杖，对面刺客多出辉月。", "清中线保持经济，不要长时间离线。", "团战站在前排后面，找角度放技能。"),
+      P("保持中路兵线压制，团战负责输出。", "先把中线推出去，再去龙坑。", "不要一个人去边路带线，你是对面的首要目标之一。", "补保命装：辉月、贤者的庇护。", "中线优先，边线让给对抗路。", "全程跟团，开团前不要先暴露位置。")
+    ],
+    adc: [
+      P("补刀发育，游走在身边时可以和对面换血。", "游走在就推线压制；游走离开后把线控在塔前。", "对面游走或打野消失就后撤，不压过河道。", "鞋 + 攻速或暴击小件。", "每一刀都要补，你是全队的经济核心。", "前期基本不离线，除非是暴君团。"),
+      P("暴君刷新前，和游走、打野站在一起。", "暴君前先推线，打完回线吃兵。", "不要一个人去暴君附近做视野。", "做第一件核心输出装。", "线上没兵时，吃自家下半区的野怪。", "暴君团站在后排输出，不要第一个进场。"),
+      P("一塔掉了就换去中路，不要守空线。", "和中路互换线，跟着大部队推塔。", "永远不要单独深入边路；看不到对面 3 人就不出塔。", "做第二、三件输出装，开始考虑名刀·司命。", "中后期补刀依然是你最大的经济来源。", "站在队友后面，打离你最近的目标。"),
+      P("跟团输出，不单带。", "只吃队友保护范围内的兵线。", "你是对面第一目标：没视野的地方一步都不进。", "保命装必出：名刀·司命、贤者的庇护。", "跟着团队吃兵吃野。", "活着才有输出：团战靠后，打最近的人。")
+    ],
+    sup: [
+      P("跟发育路或中路，帮队友探草丛、报点。", "不吃兵，把兵线经济留给队友。", "你来探草，C 位不探草；看到对面打野就发信号。", "辅助装 + 鞋，尽快升级辅助装。", "经济最低很正常，你的作用来自视野、控制和助攻。", "和打野一起抓人或入侵，离开前提醒射手。"),
+      P("暴君刷新前 30 秒先去探视野，保护 C 位。", "不碰兵线。", "暴君附近的草丛由你先探。", "做团队装（光环、减伤类）。", "不要抢最后一下，人头让给 C 位。", "开团和保人二选一，看 C 位站在哪里决定。"),
+      P("主宰前先探主宰附近的草丛，团战保护中路和发育路。", "不碰兵线，跟着中路走。", "主宰附近没视野的地方你先进，别让 C 位先进。", "按对面输出补抗性，护甲或魔抗。", "继续不抢兵，经济留给 C 位。", "保护 C 位优先；开团前确认队友跟得上。"),
+      P("跟着 C 位，开关键团。", "不碰兵线。", "你探视野死了问题不大，C 位不能死。", "补贤者的庇护等保命装。", "经济低不影响你的作用。", "先手开团，或者对面先手时反开保护后排。")
+    ]
+  };
+
+  var QUESTIONS = ["对面打野在哪？", "我的兵线在哪？", "下一个资源是什么？"];
+
+  function enemyState(t) {
+    var lastSeen = 0;
+    for (var i = 0; i < ENEMY_VISIBLE.length; i++) {
+      var a = ENEMY_VISIBLE[i][0], b = ENEMY_VISIBLE[i][1];
+      if (t >= a && t <= b) return { visible: true, lastSeen: t };
+      if (b < t) lastSeen = b;
+    }
+    return { visible: false, lastSeen: lastSeen };
+  }
+
+  function dangerText(role, n) {
+    if (role === "jg") return "对面打野已经消失 " + n + " 秒：根据他最后出现的位置推算他在哪一侧，考虑反蹲或去另一侧反野。";
+    if (role === "sup") return "对面打野已经消失 " + n + " 秒：提醒队友，草丛由你先探，不要让 C 位去探草。";
+    return "对面打野已经 " + n + " 秒没出现在小地图上：默认他就在你附近的草丛，兵线不过河道，补完刀往塔边站。";
+  }
+
+  var state = { t: 0, playing: false, speed: 1, realMs: 0, role: "mid" };
+  try {
+    var saved = localStorage.getItem("hok-role");
+    if (saved && PATHS[saved]) state.role = saved;
+  } catch (e) {}
+
+  function n(v) { return Math.round(v * 10) / 10; }
+
+  function lanePoints(lane) {
+    var pts = [];
+    for (var i = 0; i <= 20; i++) { var p = L(lane, i / 20); pts.push(n(p[0]) + "," + n(p[1])); }
+    return pts.join(" ");
+  }
+  var LANE_POINTS = { top: lanePoints("top"), mid: lanePoints("mid"), bot: lanePoints("bot") };
+
+  function diamond(p, size, style) {
+    return '<rect x="' + (p[0] - size) + '" y="' + (p[1] - size) + '" width="' + size * 2 + '" height="' + size * 2 +
+      '" transform="rotate(45 ' + p[0] + ' ' + p[1] + ')" style="' + style + '"/>';
+  }
+
+  function renderMap() {
+    var t = state.t, realMs = state.realMs, role = state.role, playing = state.playing;
+    var s = [];
+    s.push('<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">');
+    s.push('<rect x="0" y="0" width="400" height="400" rx="8" style="fill:var(--fill3)"/>');
+    s.push('<line x1="30" y1="30" x2="370" y2="370" stroke-width="24" stroke-linecap="round" style="stroke:var(--cyan);stroke-opacity:0.18"/>');
+    LANES.forEach(function (lane) {
+      s.push('<polyline points="' + LANE_POINTS[lane] + '" fill="none" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--fill2)"/>');
+    });
+
+    s.push('<text x="60" y="260" font-size="10" style="fill:var(--fg3)">对抗路</text>');
+    s.push('<text x="250" y="343" font-size="10" style="fill:var(--fg3)">发育路</text>');
+    s.push('<text x="150" y="236" font-size="10" transform="rotate(-45 150 236)" style="fill:var(--fg3)">中路</text>');
+    [[BLUE_UP, "我方野区"], [BLUE_LOW, "我方野区"], [RED_UP, "敌方野区"], [RED_LOW, "敌方野区"]].forEach(function (j) {
+      s.push('<text x="' + j[0][0] + '" y="' + j[0][1] + '" font-size="9" text-anchor="middle" style="fill:var(--fg4)">' + j[1] + '</text>');
+    });
+
+    s.push('<rect x="' + (BASE[0] - 13) + '" y="' + (BASE[1] - 13) + '" width="26" height="26" rx="4" style="fill:var(--blue);fill-opacity:0.25;stroke:var(--blue)"/>');
+    s.push('<rect x="' + (RED_BASE[0] - 13) + '" y="' + (RED_BASE[1] - 13) + '" width="26" height="26" rx="4" style="fill:var(--red);fill-opacity:0.25;stroke:var(--red)"/>');
+
+    TOWERS.forEach(function (tw) {
+      var p = L(tw.lane, tw.u), x = n(p[0]), y = n(p[1]);
+      var downAt = TOWER_DOWN[tw.lane + "-" + tw.u];
+      var down = downAt !== undefined && t >= downAt;
+      var c = tw.blue ? "var(--blue)" : "var(--red)";
+      s.push('<g opacity="' + (down ? 0.3 : 1) + '">');
+      s.push('<rect x="' + (x - 4.5) + '" y="' + (y - 4.5) + '" width="9" height="9" rx="1.5" stroke-width="1.5" style="fill:var(--bg);stroke:' + c + '"/>');
+      if (down) s.push('<path d="M' + (x - 5) + ' ' + (y - 5) + ' L' + (x + 5) + ' ' + (y + 5) + ' M' + (x + 5) + ' ' + (y - 5) + ' L' + (x - 5) + ' ' + (y + 5) + '" stroke-width="1.2" style="stroke:' + c + '"/>');
+      s.push('</g>');
+    });
+
+    [["暴君", TYRANT], ["主宰", LORD]].forEach(function (r) {
+      s.push(diamond(r[1], 7, "fill:none;stroke:var(--stroke1);stroke-dasharray:2 2"));
+      s.push('<text x="' + r[1][0] + '" y="' + (r[1][1] + 22) + '" font-size="9" text-anchor="middle" style="fill:var(--fg4)">' + r[0] + '坑</text>');
+    });
+    RESOURCES.forEach(function (r) {
+      if (t < r.warn || t > r.end) return;
+      var alive = t >= r.start;
+      s.push(diamond(r.p, 8, alive ? "fill:var(--yellow);fill-opacity:0.85;stroke:var(--yellow);stroke-width:1.5" : "fill:none;stroke:var(--yellow);stroke-width:1.5"));
+      s.push('<text x="' + r.p[0] + '" y="' + (r.p[1] - 15) + '" font-size="10" text-anchor="middle" style="fill:var(--fg)">' +
+        (alive ? r.name : r.name + " " + Math.ceil(r.start - t) + "s 后刷新") + '</text>');
+    });
+
+    LANES.forEach(function (lane) {
+      var f = laneFront(lane, t);
+      for (var sp = 15; sp <= t; sp += 30) {
+        var age = t - sp;
+        if (age > 50) continue;
+        var k = Math.min(1, age / 35);
+        var o = age > 35 ? 1 - (age - 35) / 15 : 1;
+        [[L(lane, 0.08 + (f - 0.08) * k), "var(--blue)"], [L(lane, 0.92 - (0.92 - f) * k), "var(--red)"]].forEach(function (w) {
+          s.push('<g opacity="' + n(o) + '">');
+          [[-3, -3], [2, -1], [-1, 2]].forEach(function (d) {
+            s.push('<rect x="' + n(w[0][0] + d[0] - 2) + '" y="' + n(w[0][1] + d[1] - 2) + '" width="4" height="4" style="fill:' + w[1] + '"/>');
+          });
+          s.push('</g>');
+        });
+      }
+    });
+
+    var trail = [];
+    for (var ts = t; ts <= Math.min(GAME_END, t + 90); ts += 3) trail.push(posAt(PATHS[role], ts));
+    var moves = trail.some(function (p) { return Math.hypot(p[0] - trail[0][0], p[1] - trail[0][1]) > 6; });
+    if (moves) {
+      s.push('<polyline points="' + trail.map(function (p) { return n(p[0]) + "," + n(p[1]); }).join(" ") +
+        '" fill="none" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.8" style="stroke:var(--accent)"/>');
+    }
+
+    var enemy = enemyState(t);
+    var ep = posAt(ENEMY_JG, enemy.visible ? t : enemy.lastSeen);
+    if (enemy.visible) {
+      s.push('<circle cx="' + n(ep[0]) + '" cy="' + n(ep[1]) + '" r="9" stroke-width="2" style="fill:var(--bg);stroke:var(--red)"/>');
+      s.push('<text x="' + n(ep[0]) + '" y="' + n(ep[1]) + '" font-size="10" text-anchor="middle" dominant-baseline="central" style="fill:var(--red)">敌</text>');
+    } else {
+      var missing = Math.floor(t - enemy.lastSeen);
+      s.push('<g opacity="0.75">');
+      s.push('<circle cx="' + n(ep[0]) + '" cy="' + n(ep[1]) + '" r="10" fill="none" stroke-dasharray="3 2" style="stroke:var(--red)"/>');
+      s.push('<text x="' + n(ep[0]) + '" y="' + n(ep[1]) + '" font-size="10" text-anchor="middle" dominant-baseline="central" style="fill:var(--red)">?</text>');
+      s.push('<text x="' + n(ep[0]) + '" y="' + n(ep[1] - 15) + '" font-size="9" text-anchor="middle" style="fill:var(--red)">消失 ' + missing + 's</text>');
+      s.push('</g>');
+    }
+
+    ROLES.forEach(function (r, i) {
+      var p = posAt(PATHS[r.id], t);
+      var x = n(p[0] + Math.sin(realMs / 600 + i * 1.7) * 2);
+      var y = n(p[1] + Math.cos(realMs / 700 + i * 1.3) * 2);
+      var sel = r.id === role;
+      if (sel) s.push('<circle cx="' + x + '" cy="' + y + '" r="' + n(14 + Math.sin(realMs / 220) * 2) + '" fill="none" stroke-width="1.5" opacity="0.7" style="stroke:var(--accent)"/>');
+      s.push('<circle cx="' + x + '" cy="' + y + '" r="' + (sel ? 10 : 8.5) + '" stroke-width="1.5" style="fill:' + (sel ? "var(--blue)" : "var(--bg)") + ';stroke:var(--blue)"/>');
+      s.push('<text x="' + x + '" y="' + y + '" font-size="10" text-anchor="middle" dominant-baseline="central" style="fill:' + (sel ? "var(--bg)" : "var(--blue)") + '">' + r.short + '</text>');
+    });
+
+    if (playing) {
+      var pulse = (realMs % 3000) / 3000;
+      s.push('<circle cx="200" cy="200" r="' + n(10 + 280 * pulse) + '" fill="none" stroke-width="1.5" opacity="' + n((1 - pulse) * 0.45) + '" style="stroke:var(--accent)"/>');
+    }
+    s.push('</svg>');
+    return s.join("");
+  }
+
+  var $ = function (id) { return document.getElementById(id); };
+  var tl = $("timeline");
+  var tlProgress, tlCursor, tlSegs = [];
+
+  function pct(v) { return (v / GAME_END) * 100 + "%"; }
+
+  function buildTimeline() {
+    tlProgress = document.createElement("div");
+    tlProgress.className = "progress";
+    tl.appendChild(tlProgress);
+    PHASES.forEach(function (ph, i) {
+      var d = document.createElement("div");
+      d.className = "seg";
+      d.style.left = pct(ph.start);
+      d.style.width = pct(ph.end - ph.start);
+      if (i > 0) d.style.borderLeft = "1px solid var(--stroke2)";
+      d.textContent = ph.name;
+      tl.appendChild(d);
+      tlSegs.push(d);
+    });
+    EVENTS.forEach(function (ev) {
+      var d = document.createElement("div");
+      d.className = "tick";
+      d.style.left = pct(ev.t);
+      tl.appendChild(d);
+    });
+    tlCursor = document.createElement("div");
+    tlCursor.className = "cursor";
+    tl.appendChild(tlCursor);
+    tl.addEventListener("click", function (e) {
+      var rect = tl.getBoundingClientRect();
+      state.t = Math.max(0, Math.min(GAME_END, ((e.clientX - rect.left) / rect.width) * GAME_END));
+      render();
+    });
+  }
+
+  function buildControls() {
+    var roles = $("roles");
+    ROLES.forEach(function (r) {
+      var b = document.createElement("button");
+      b.className = "pill";
+      b.textContent = r.name;
+      b.dataset.role = r.id;
+      b.addEventListener("click", function () {
+        state.role = r.id;
+        try { localStorage.setItem("hok-role", r.id); } catch (e) {}
+        render();
+      });
+      roles.appendChild(b);
+    });
+    var speeds = $("speeds");
+    [0.5, 1, 2].forEach(function (sp) {
+      var b = document.createElement("button");
+      b.className = "pill sm";
+      b.textContent = sp + "x";
+      b.dataset.speed = String(sp);
+      b.addEventListener("click", function () { state.speed = sp; render(); });
+      speeds.appendChild(b);
+    });
+    $("play").addEventListener("click", function () {
+      if (state.t >= GAME_END) state.t = 0;
+      state.playing = !state.playing;
+      render();
+    });
+    $("reset").addEventListener("click", function () {
+      state.t = 0;
+      state.playing = false;
+      render();
+    });
+  }
+
+  function render() {
+    var t = state.t;
+    $("map").innerHTML = renderMap();
+
+    tlProgress.style.width = pct(t);
+    tlCursor.style.left = pct(t);
+    var phaseIdx = PHASES.length - 1;
+    for (var i = 0; i < PHASES.length; i++) if (t >= PHASES[i].start && t < PHASES[i].end) { phaseIdx = i; break; }
+    tlSegs.forEach(function (d, i) { d.classList.toggle("active", i === phaseIdx); });
+
+    Array.prototype.forEach.call(document.querySelectorAll("#roles .pill"), function (b) {
+      b.classList.toggle("active", b.dataset.role === state.role);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("#speeds .pill"), function (b) {
+      b.classList.toggle("active", Number(b.dataset.speed) === state.speed);
+    });
+    $("play").textContent = state.playing ? "暂停" : (t > 0 && t < GAME_END ? "继续" : "播放");
+
+    var pulse = state.playing ? (state.realMs % 3000) / 3000 : 1;
+    $("radarDot").style.opacity = state.playing ? String(1 - pulse * 0.8) : "0.3";
+    var radar = $("radarText");
+    radar.textContent = "每 3 秒看一眼小地图：" + QUESTIONS[Math.floor(state.realMs / 3000) % 3];
+    radar.style.color = state.playing && pulse < 0.35 ? "var(--fg)" : "";
+
+    var ph = PHASES[phaseIdx];
+    $("clock").textContent = fmt(t);
+    $("phaseRange").textContent = ph.range;
+    $("phaseName").textContent = ph.name;
+    $("phaseGoal").textContent = ph.goal;
+
+    var last = EVENTS[0], next = null;
+    for (var j = 0; j < EVENTS.length; j++) {
+      if (EVENTS[j].t <= t) last = EVENTS[j];
+      else { next = EVENTS[j]; break; }
+    }
+    $("eventTitle").textContent = fmt(last.t) + " 局势";
+    $("eventText").textContent = last.text;
+    $("nextEvent").textContent = next ? "接下来 " + fmt(next.t) + "：" + next.text : "";
+
+    var enemy = enemyState(t);
+    var missing = enemy.visible ? 0 : Math.floor(t - enemy.lastSeen);
+    $("danger").style.display = missing > 10 ? "" : "none";
+    if (missing > 10) $("dangerText").textContent = dangerText(state.role, missing);
+
+    var roleName = ROLES.filter(function (r) { return r.id === state.role; })[0].name;
+    var plan = PLAN[state.role][phaseIdx];
+    $("roleTitle").textContent = roleName + "现在做什么";
+    $("roleDo").textContent = plan.do;
+    $("pWave").textContent = plan.wave;
+    $("pGank").textContent = plan.gank;
+    $("pItems").textContent = plan.items;
+    $("pGold").textContent = plan.gold;
+    $("pFight").textContent = plan.fight;
+  }
+
+  buildTimeline();
+  buildControls();
+  render();
+
+  setInterval(function () {
+    if (!state.playing) return;
+    state.t = Math.min(GAME_END, state.t + BASE_RATE * state.speed * (TICK_MS / 1000));
+    state.realMs += TICK_MS;
+    if (state.t >= GAME_END) state.playing = false;
+    render();
+  }, TICK_MS);
+})();
+</script>
+</body>
+</html>
