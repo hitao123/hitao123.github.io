@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0c1116" />
+  <meta name="description" content="裂隙擂台：Unity 3D 街头格斗，两人同键盘，用跳跃、蹲防、拳脚和必杀打空对手生命值。" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <title>裂隙擂台 · 街头对决</title>
+  <script type="module" crossorigin src="./assets/index-CMxsUoNn.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-cKWSYtse.css">
+</head>
+<body>
+  <main>
+    <header class="masthead">
+      <a class="brand" href="./" aria-label="裂隙擂台首页"><span class="brand-icon">R</span> RIFT ARENA<span class="edition">STREET DUEL / 02</span></a>
+      <div class="tools"><a class="blog-link" href="https://hitao123.github.io/#work">← 返回博客</a><span class="engine"><i></i><span id="engine-status" role="status">连接中</span></span><button id="sound" aria-pressed="false">音效：开</button><button id="settings">键位设置 ↗</button></div>
+    </header>
+    <section class="intro" aria-labelledby="game-title">
+      <div><p class="eyebrow">同一张桌子，同一个键盘。</p><h1 id="game-title">裂隙<span>擂台</span><em>STREET / DUEL</em></h1></div>
+      <p class="intro-copy">这一拳，正面接。<br>打空对手生命值，赢下街头对决。<span>本地双人 · 3D 街头格斗 · 先赢两局</span></p>
+    </section>
+    <section class="arena" aria-label="双人街头格斗">
+      <div class="arena-hud">
+        <div class="fighter p1"><div class="fighter-name"><span>P1</span><strong>青岚</strong><div class="wins" aria-label="玩家一胜局"><i id="win-1-0"></i><i id="win-1-1"></i></div></div><div class="damage"><strong id="health-1">100</strong><span id="fighter-state-1">生命值 / HP</span></div><div class="health-track" id="health-track-1" role="progressbar" aria-label="青岚生命值" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><b id="health-ghost-1" aria-hidden="true"></b><i id="health-bar-1"></i></div></div>
+        <div class="match-clock"><span id="round">ROUND 01</span><strong id="timer">60</strong><small>FIRST TO 2</small></div>
+        <div class="fighter p2"><div class="fighter-name"><span>P2</span><strong>赤焰</strong><div class="wins" aria-label="玩家二胜局"><i id="win-2-0"></i><i id="win-2-1"></i></div></div><div class="damage"><strong id="health-2">100</strong><span id="fighter-state-2">生命值 / HP</span></div><div class="health-track" id="health-track-2" role="progressbar" aria-label="赤焰生命值" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><b id="health-ghost-2" aria-hidden="true"></b><i id="health-bar-2"></i></div></div>
+      </div>
+      <div class="viewport" id="viewport">
+        <canvas id="unity-canvas" tabindex="0" aria-label="Unity 3D 街头格斗；按键操作见下方说明" hidden></canvas>
+        <div id="scene-preview" aria-hidden="true"><div class="orbit orbit-back"></div><div class="platform-preview"><div class="platform-inner"></div><div class="preview-token token-one"></div><div class="preview-token token-two"></div></div><div class="preview-caption">STREET DUEL / 场景加载中</div></div>
+        <div id="impact-flash" aria-hidden="true"></div>
+        <span class="impact-cue impact-one" id="impact-1" aria-hidden="true"></span><span class="impact-cue impact-two" id="impact-2" aria-hidden="true"></span>
+        <div id="result-banner" hidden><strong id="result-title">K.O.</strong><span id="result-winner"></span><small id="result-score"></small></div>
+        <div id="overlay"><p class="eyebrow" id="overlay-tag">READY TO FIGHT</p><h2 id="overlay-title">两个人，正面交锋。</h2><p id="overlay-detail">打空对手生命值。跳跃、蹲防、拳脚和波动弹，先赢两局。</p><button class="primary" id="start" disabled>开始对决 ↗</button><button id="retry" class="secondary" hidden>重新加载游戏 ↻</button></div>
+      </div>
+      <div class="arena-bottom"><p id="event" role="status">拳脚试探，跳跃压制，波动决胜。</p><div><span id="match-status">生命值归零 K.O. · 时间到比剩余生命</span><button id="pause" disabled>暂停 · P</button></div></div>
+    </section>
+    <section class="control-deck" aria-label="双方操作与技能">
+      <article class="player-panel p1">
+        <div class="panel-title"><span>01 / 青岚</span><span>方向 <kbd id="move-keys-1">W S A D</kbd></span></div>
+        <div class="movement-guide"><span><kbd data-key="0-2">A</kbd> / <kbd data-key="0-3">D</kbd> 移动</span><span><kbd data-key="0-0">W</kbd> 跳跃</span><span>按住 <kbd data-key="0-1">S</kbd> 蹲防</span></div>
+        <div class="skills"><div><kbd data-key="0-4">F</kbd><strong>连拳</strong><small id="attack-1">三段连拳</small></div><div><kbd data-key="0-5">G</kbd><strong>重踢</strong><small>空中可破防</small></div><div><kbd data-key="0-6">H</kbd><strong>波动弹</strong><small id="wave-1">就绪</small></div><div id="burst-1"><kbd data-key="0-7">R</kbd><strong>裂空必杀</strong><small id="energy-text-1">25 / 100</small></div></div><div class="energy-track"><i id="energy-1"></i></div>
+      </article>
+      <article class="player-panel p2">
+        <div class="panel-title"><span>02 / 赤焰</span><span>方向 <kbd id="move-keys-2">↑ ↓ ← →</kbd></span></div>
+        <div class="movement-guide"><span><kbd data-key="1-2">←</kbd> / <kbd data-key="1-3">→</kbd> 移动</span><span><kbd data-key="1-0">↑</kbd> 跳跃</span><span>按住 <kbd data-key="1-1">↓</kbd> 蹲防</span></div>
+        <div class="skills"><div><kbd data-key="1-4">J</kbd><strong>连拳</strong><small id="attack-2">三段连拳</small></div><div><kbd data-key="1-5">K</kbd><strong>重踢</strong><small>空中可破防</small></div><div><kbd data-key="1-6">L</kbd><strong>波动弹</strong><small id="wave-2">就绪</small></div><div id="burst-2"><kbd data-key="1-7">U</kbd><strong>裂空必杀</strong><small id="energy-text-2">25 / 100</small></div></div><div class="energy-track"><i id="energy-2"></i></div>
+      </article>
+    </section>
+    <section class="rules" aria-label="玩法说明">
+      <article><span>01 — COMBO</span><h3>靠近，三连拳接重踢。</h3><p>连续按拳键打出三段连拳，第三拳将对手打浮空。双击左或右快速冲步；出招后有收招时间，别让对手抓住破绽。</p></article>
+      <article><span>02 — GUARD</span><h3>防住地面，留心头顶。</h3><p>按住下方向键蹲防，普通拳脚不掉血；刚蹲下的瞬间可精准防御。跳跃接踢击能破蹲防，跳过波动弹再靠近。</p></article>
+      <article><span>03 — SPECIAL</span><h3>波动相消，必杀决胜。</h3><p>波动弹冷却 1.05 秒，双方波动可以抵消。命中、受击和时间积攒能量；满 100 释放裂空必杀。每局 60 秒，先赢两局获胜。</p></article>
+    </section>
+    <aside id="build-note" hidden><strong>Unity 构建尚未生成</strong><p>需要 Unity Editor 和同版本 WebGL Build Support。导入本项目的 <code>unity</code> 文件夹，通过菜单 <code>Rift Arena → Build Web</code> 导出，再重新加载游戏。</p></aside>
+    <footer><span>RIFT ARENA © 2026</span><span>支持同时按键的实体键盘 · 可改键 · 切出页面自动暂停</span><span>MADE FOR TWO.</span></footer>
+  </main>
+  <dialog id="keys-dialog" aria-labelledby="keys-title"><div class="dialog-title"><div><p class="eyebrow">MAKE IT YOURS</p><h2 id="keys-title">找到顺手的键位</h2></div><button id="close-keys" aria-label="关闭键位设置">✕</button></div><p class="dialog-copy">点击按键，再按新键。两人的按键不能重复；若多键同时按不响应，可换一组键位。</p><div id="key-grid"></div><p id="key-hint" role="status">改键时对战会暂停，关闭后按 P 继续。</p><button id="reset-keys" class="secondary">恢复默认键位</button></dialog>
+</body>
+</html>

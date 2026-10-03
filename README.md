@@ -21,3 +21,7 @@ The build writes static files to `../vibe/`, which GitHub Pages serves from the 
 The latest interactive article is [王者峡谷 20 分钟节奏图](https://hitao123.github.io/archive/2026/honor-of-kings-20min-playbook/), published on 2026-10-02. Its complete HTML, styles, and interactive map are in `archive/2026/honor-of-kings-20min-playbook/index.html`.
 
 To publish an article, add its static page under `archive/<year>/<slug>/`, add a dated link at the top of the homepage's `post-list`, and add its archive entry in `blog-enhancements.js`. Bump the script version in legacy HTML pages when changing the archive enhancement so returning visitors receive the current article list.
+
+## Play Rift Arena
+
+[Rift Arena / 裂隙擂台](https://hitao123.github.io/games/rift-arena/) is a Unity WebGL street fighting game for two players on one keyboard, published on 2026-10-03. The homepage work section links directly to it. Its complete static build is under `games/rift-arena/`; keep the HTML, assets and Unity build files together when updating. Build the game in its Unity project, run `pnpm test && pnpm build`, then copy the complete `dist/` directory here. The bundled character and animation attribution is in `games/rift-arena/credits/CREDITS.md`.
